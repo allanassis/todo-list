@@ -4,6 +4,6 @@ setup:
 build:
 	@go build ./...
 
-run:
+run: build
 	@go install github.com/allanassis/todo-list
 	@todo-list

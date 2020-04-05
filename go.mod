@@ -9,6 +9,7 @@ require (
 	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/mattn/go-colorable v0.1.6 // indirect
 	github.com/valyala/fasttemplate v1.1.0 // indirect
+	go.mongodb.org/mongo-driver v1.3.1
 	golang.org/x/crypto v0.0.0-20200403201458-baeed622b8d8 // indirect
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e // indirect
 	golang.org/x/sys v0.0.0-20200331124033-c3d80250170d // indirect

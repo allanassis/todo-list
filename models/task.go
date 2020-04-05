@@ -2,19 +2,40 @@ package models
 
 import (
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson"
 	"time"
+)
+
+const (
+	COLLECTION = "tasks"
 )
 
 type Task struct {
 	Id          string
-	Status      string
-	Text        string
+	Status      string `json:"status"`
+	Text        string `json:"text"`
 	CreatedDate time.Time
 }
 
-func (t *Task) Save() error {
-	fmt.Println("Salvando a task: %s", t.Text)
-	return nil
+func (t *Task) Save() (interface{}, error) {
+	client, err := NewDbClient()
+	if err != nil {
+		return nil, err.(error)
+	}
+	err = client.Connect()
+	if err != nil {
+		return nil, err.(error)
+	}
+
+	tasks := client.GetCollection(COLLECTION)
+	res, err := tasks.InsertOne(client.ctx, bson.M{"status": t.Status, "text": t.Text, "created_date": t.CreatedDate})
+	if err != nil {
+		return nil, err.(error)
+	}
+
+	fmt.Println("Salvando a task: " + t.Text)
+
+	return res.InsertedID, nil
 }
 
 func (t *Task) Del() error {

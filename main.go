@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/allanassis/todo-list/models"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"time"
@@ -15,6 +16,7 @@ func main() {
 
 	e.POST("/task", func(c echo.Context) error {
 		t := &models.Task{
+			Id:          uuid.New().String(),
 			CreatedDate: time.Now(),
 		}
 		if err := c.Bind(t); err != nil {

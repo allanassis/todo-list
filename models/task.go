@@ -28,7 +28,7 @@ func (t *Task) Save() (interface{}, error) {
 	}
 
 	tasks := client.GetCollection(COLLECTION)
-	res, err := tasks.InsertOne(client.ctx, bson.M{"status": t.Status, "text": t.Text, "created_date": t.CreatedDate})
+	res, err := tasks.InsertOne(client.ctx, bson.M{"id": t.Id, "status": t.Status, "text": t.Text, "created_date": t.CreatedDate})
 	if err != nil {
 		return nil, err.(error)
 	}

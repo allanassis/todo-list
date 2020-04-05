@@ -6,19 +6,19 @@ import (
 )
 
 type Task struct {
-	id          string
-	status      string
-	text        string
-	createdDate time.Time
+	Id          string
+	Status      string
+	Text        string
+	CreatedDate time.Time
 }
 
 func (t *Task) Save() error {
-	fmt.Println("Salvando a task: %s", t.text)
+	fmt.Println("Salvando a task: %s", t.Text)
 	return nil
 }
 
 func (t *Task) Del() error {
-	fmt.Println("Deletando a task: %s", t.text)
+	fmt.Println("Deletando a task: %s", t.Text)
 	return nil
 }
 

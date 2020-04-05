@@ -2,11 +2,11 @@ package models
 
 import (
 	"context"
-	"time"
-
+	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"time"
 )
 
 const (
@@ -21,14 +21,12 @@ type DbClient struct {
 
 func NewDbClient() (DbClient, interface{}) {
 
-	ctx, err := context.WithTimeout(context.Background(), 10*time.Second)
-	if err != nil {
-		return DbClient{}, err
-	}
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
-	client, err2 := mongo.NewClient(options.Client().ApplyURI(MONGO_URL))
-	if err2 != nil {
-		return DbClient{}, err2
+	client, err := mongo.NewClient(options.Client().ApplyURI(MONGO_URL))
+	if err != nil {
+		fmt.Println("erro no newClient")
+		return DbClient{}, err
 	}
 
 	return DbClient{

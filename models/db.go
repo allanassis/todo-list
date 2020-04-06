@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	MONGO_URL = "mongodb://localhost:27017"
+	MONGO_URL = "mongodb://root:rootpassword@localhost:27017"
 	DATA_BASE = "todo-list"
 )
 

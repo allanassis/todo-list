@@ -68,9 +68,27 @@ func (t *Task) Get() (Task, error) {
 	return emptyTask, nil
 }
 
-func (t *Task) Del() error {
-	fmt.Println("Deletando a task: %s", t.Text)
-	return nil
+func (t *Task) Del() (bool, error) {
+	c, err := NewDbClient()
+	defer c.Client.Disconnect(c.ctx)
+
+	if err != nil {
+		return false, err.(error)
+	}
+	err = c.Connect()
+	if err != nil {
+		return false, err.(error)
+	}
+
+	tasks := c.GetCollection(COLLECTION)
+	res, err := tasks.DeleteOne(c.ctx, bson.M{"id": t.Id})
+	if err != nil {
+		return false, err.(error)
+	}
+
+	fmt.Println("Retornando a task: ", res.DeletedCount)
+
+	return true, nil
 }
 
 func GetAll() ([]Task, error) {

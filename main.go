@@ -36,5 +36,17 @@ func main() {
 		return c.JSON(http.StatusCreated, t)
 	})
 
+	e.DELETE("/task/:id", func(c echo.Context) error {
+		id := c.Param("id")
+		t := &models.Task{
+			Id: id,
+		}
+		if err := c.Bind(t); err != nil {
+			return err
+		}
+		t.Del()
+		return c.JSON(http.StatusOK, t)
+	})
+
 	e.Logger.Fatal(e.Start(":1323"))
 }

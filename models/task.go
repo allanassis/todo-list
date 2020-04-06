@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"time"
@@ -12,23 +13,25 @@ const (
 
 type Task struct {
 	Id          string
-	Status      string `json:"status"`
-	Text        string `json:"text"`
-	CreatedDate time.Time
+	Status      string    `json:"status"`
+	Text        string    `json:"text"`
+	CreatedDate time.Time `json:"created_date"`
 }
 
 func (t *Task) Save() (interface{}, error) {
-	client, err := NewDbClient()
+	c, err := NewDbClient()
+	defer c.Client.Disconnect(c.ctx)
+
 	if err != nil {
 		return nil, err.(error)
 	}
-	err = client.Connect()
+	err = c.Connect()
 	if err != nil {
 		return nil, err.(error)
 	}
 
-	tasks := client.GetCollection(COLLECTION)
-	res, err := tasks.InsertOne(client.ctx, bson.M{"id": t.Id, "status": t.Status, "text": t.Text, "created_date": t.CreatedDate})
+	tasks := c.GetCollection(COLLECTION)
+	res, err := tasks.InsertOne(c.ctx, bson.M{"id": t.Id, "status": t.Status, "text": t.Text, "created_date": t.CreatedDate})
 	if err != nil {
 		return nil, err.(error)
 	}
@@ -36,6 +39,33 @@ func (t *Task) Save() (interface{}, error) {
 	fmt.Println("Salvando a task: " + t.Text)
 
 	return res.InsertedID, nil
+}
+
+func (t *Task) Get() (Task, error) {
+	emptyTask := Task{}
+	var result bson.M
+	c, err := NewDbClient()
+	defer c.Client.Disconnect(c.ctx)
+
+	if err != nil {
+		return emptyTask, err.(error)
+	}
+	err = c.Connect()
+	if err != nil {
+		return emptyTask, err.(error)
+	}
+
+	tasks := c.GetCollection(COLLECTION)
+	err = tasks.FindOne(c.ctx, bson.M{"id": t.Id}).Decode(&result)
+	if err != nil {
+		return emptyTask, err.(error)
+	}
+	resp, _ := json.Marshal(result)
+	json.Unmarshal(resp, &emptyTask)
+
+	fmt.Println("Retornando a task: " + t.Text)
+
+	return emptyTask, nil
 }
 
 func (t *Task) Del() error {

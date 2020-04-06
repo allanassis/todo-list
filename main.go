@@ -10,8 +10,18 @@ import (
 
 func main() {
 	e := echo.New()
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!")
+
+	e.GET("/task/:id", func(c echo.Context) error {
+		id := c.Param("id")
+		t := models.Task{
+			Id: id,
+		}
+		t, err := t.Get()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+		}
+
+		return c.JSON(http.StatusOK, t)
 	})
 
 	e.POST("/task", func(c echo.Context) error {

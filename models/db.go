@@ -53,10 +53,3 @@ func (db *DbClient) Connect() error {
 func (db *DbClient) GetCollection(collection string) *mongo.Collection {
 	return db.Client.Database(DATA_BASE).Collection(collection)
 }
-
-// func Bla() {
-
-// 	collection := client.Database("testing").Collection("numbers")
-// 	res, _ := collection.InsertOne(ctx, bson.M{"name": "pi", "value": 3.14159})
-// 	fmt.Println(res.InsertedID)
-// }

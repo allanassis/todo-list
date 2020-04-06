@@ -63,7 +63,7 @@ func (t *Task) Get() (Task, error) {
 	resp, _ := json.Marshal(result)
 	json.Unmarshal(resp, &emptyTask)
 
-	fmt.Println("Retornando a task: " + t.Text)
+	fmt.Println("Retornando a task: ", t.Text)
 
 	return emptyTask, nil
 }
@@ -92,7 +92,34 @@ func (t *Task) Del() (bool, error) {
 }
 
 func GetAll() ([]Task, error) {
-	tasks := []Task{}
+	emptyTasks := []Task{}
+	var results []bson.M
+	c, err := NewDbClient()
+	defer c.Client.Disconnect(c.ctx)
+
+	if err != nil {
+		return emptyTasks, err.(error)
+	}
+	err = c.Connect()
+	if err != nil {
+		return emptyTasks, err.(error)
+	}
+
+	tasks := c.GetCollection(COLLECTION)
+	// err = tasks.FindOne(c.ctx, bson.M{"id": t.Id}).Decode(&result)
+	cursor, err := tasks.Find(c.ctx, bson.M{})
+	if err != nil {
+		return emptyTasks, err.(error)
+	}
+
+	err = cursor.All(c.ctx, &results)
+	if err != nil {
+		return emptyTasks, err.(error)
+	}
+
+	resp, _ := json.Marshal(results)
+	json.Unmarshal(resp, &emptyTasks)
+
 	fmt.Println("Pegando todas as tasks")
-	return tasks, nil
+	return emptyTasks, nil
 }

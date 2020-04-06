@@ -24,6 +24,15 @@ func main() {
 		return c.JSON(http.StatusOK, t)
 	})
 
+	e.GET("/task", func(c echo.Context) error {
+		ts, err := models.GetAll()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+		}
+
+		return c.JSON(http.StatusOK, ts)
+	})
+
 	e.POST("/task", func(c echo.Context) error {
 		t := &models.Task{
 			Id:          uuid.New().String(),
